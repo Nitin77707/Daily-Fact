@@ -1,0 +1,27 @@
+name: Daily Finance Fact
+
+on:
+  schedule:
+    - cron: '30 1 * * *'  # 7:00 AM IST = 01:30 UTC
+  workflow_dispatch:
+
+jobs:
+  post_fact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Send daily fact
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python send_fact.py
